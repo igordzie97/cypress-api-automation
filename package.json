@@ -1,0 +1,28 @@
+{
+  "name": "cypress-work",
+  "version": "1.0.0",
+  "description": "Proboujemy",
+  "main": "index.js",
+  "scripts": {
+    "open": "cypress open",
+    "lint": "eslint ./**/*.ts"
+  },
+  "author": "IGOR",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/eslint-parser": "^7.15.4",
+    "@testing-library/cypress": "^8.0.1",
+    "@typescript-eslint/eslint-plugin": "^4.31.0",
+    "@typescript-eslint/parser": "^4.31.0",
+    "babel-eslint": "^10.1.0",
+    "cypress": "^8.3.1",
+    "cypress-localstorage-commands": "^1.2.2",
+    "eslint": "^7.32.0",
+    "eslint-config-standard": "^16.0.3",
+    "eslint-plugin-cypress": "^2.11.3",
+    "eslint-plugin-import": "^2.24.2",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^5.1.0",
+    "typescript": "^4.4.2"
+  }
+}
