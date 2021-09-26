@@ -1,7 +1,18 @@
 {
-  "env": { "es6": true },
-  "parser": "babel-eslint",
-  "extends": ["eslint:recommended", "plugin:cypress/recommended"],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "requireConfigFile": false
+  },
+  "extends": [
+    "plugin:cypress/recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
   "plugins": ["@typescript-eslint", "cypress"],
-  "rules": {}
+  "rules": {
+    "quotes": [2, "single", "avoid-escape"],
+    "@typescript-eslint/no-explicit-any": ["off"],
+    "@typescript-eslint/no-empty-function": 0,
+    "@typescript-eslint/no-unused-vars": 0,
+    "@typescript-eslint/no-namespace": "off"
+  }
 }

@@ -1,57 +1,48 @@
-class AccountHelper {
-  createBearerToken = (token: string) => {
-    return "Bearer " + token;
+import {
+  getTokenRequest,
+  getAccountRequest,
+  getAccountBasketsRequest,
+} from '@controllerPaths/Accounts';
+import { AccountAuth } from '@dataTypes/Accounts';
+import { StringParameter, ApiResponse } from '@dataTypes/ApiRequest';
+
+class AccountsHelper {
+  getToken = (account: AccountAuth): ApiResponse['body'] => {
+    return cy.apiRequest(getTokenRequest(account)).then((resp) => {
+      expect(resp.status).equal(200);
+      return resp.body.access_token;
+    });
   };
 
-  getToken = (username: string, password: string) => {
-    return cy
-      .request({
-        method: "POST",
-        url: Cypress.env("BASE_URL") + Cypress.env("endpoints").token,
-        headers: {
-          "X-API-Key": Cypress.env("API_KEY"),
-        },
-        form: true,
-        body: {
-          grant_type: "password",
-          username: username,
-          password: password,
-        },
-      })
-      .then((resp) => {
-        expect(resp.status).equal(200);
-        return resp.body;
-      });
-  };
-
-  checkAccount = (token: string, username: string) => {
-    cy.request({
-      method: "GET",
-      url: Cypress.env("BASE_URL") + Cypress.env("endpoints").account,
-      headers: {
-        "X-API-Key": Cypress.env("API_KEY"),
-        Authorization: token,
-      },
-    }).then((resp) => {
+  checkAccountAuth = (
+    token: StringParameter,
+    username: StringParameter
+  ): ApiResponse['body'] => {
+    return cy.apiRequest(getAccountRequest(token)).then((resp) => {
       expect(resp.status).equal(200);
       expect(resp.body.AccountId).equal(username);
       return resp.body;
     });
   };
 
-  getAccountBaskets = (token: string) => {
-    cy.request({
-      method: "GET",
-      url: Cypress.env("BASE_URL") + Cypress.env("endpoints").account_baskets,
-      headers: {
-        "X-API-Key": Cypress.env("API_KEY"),
-        Authorization: token,
-      },
-    }).then((resp) => {
+  checkAccountUnauth = (token: StringParameter): void => {
+    cy.apiRequest(getAccountRequest(token)).then((resp) => {
+      expect(resp.status).equal(401);
+    });
+  };
+
+  getAccountBasketsUnauth = (token: StringParameter): void => {
+    cy.apiRequest(getAccountBasketsRequest(token)).then((resp) => {
+      expect(resp.status).equal(401);
+    });
+  };
+
+  getAccountBasketsAuth = (token: StringParameter): ApiResponse['body'] => {
+    return cy.apiRequest(getAccountBasketsRequest(token)).then((resp) => {
       expect(resp.status).equal(200);
       return resp.body;
     });
   };
 }
 
-export default AccountHelper;
+export default AccountsHelper;

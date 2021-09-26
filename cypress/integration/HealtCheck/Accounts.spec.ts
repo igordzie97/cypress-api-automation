@@ -1,35 +1,29 @@
-import AccountHelper from "../../helpers/Accounts";
+import { testAccount } from '@dataSets/Accounts';
+import AccountHelper from '@helpers/Accounts';
 
-describe("Test of Account endpoint", () => {
+describe('Test of Account endpoint', () => {
   const accountHelper = new AccountHelper();
 
-  it("should GET Bearer token with given username and password", () => {
-    cy.fixture("user").then((user) => {
-      accountHelper.getToken(user.username, user.password).then((body) => {
-        cy.setLocalStorage(
-          Cypress.env("storage_token"),
-          accountHelper.createBearerToken(body.access_token)
-        );
-      });
+  it('should GET Bearer token with given username and password', () => {
+    accountHelper.getToken(testAccount).then((token: string) => {
+      cy.setLocalStorage('token', token);
     });
     cy.saveLocalStorage();
   });
 
-  it("should GET information about account with given Bearer token", () => {
+  it('should GET information about account with given Bearer token', () => {
     cy.restoreLocalStorage();
 
-    cy.getLocalStorage(Cypress.env("storage_token")).then((token) => {
-      cy.fixture("user").then((user) => {
-        accountHelper.checkAccount(token, user.username);
-      });
+    cy.getLocalStorage('token').then((token) => {
+      accountHelper.checkAccountAuth(token, testAccount.email);
     });
   });
 
-  it("should properly GET Account baskets with given Bearer token", () => {
+  it('should properly GET Account baskets with given Bearer token', () => {
     cy.restoreLocalStorage();
 
-    cy.getLocalStorage(Cypress.env("storage_token")).then((token) => {
-      accountHelper.getAccountBaskets(token);
+    cy.getLocalStorage('token').then((token) => {
+      accountHelper.getAccountBasketsAuth(token);
     });
   });
 });

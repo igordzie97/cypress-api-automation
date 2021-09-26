@@ -1,51 +1,30 @@
+import { ApiResponse } from '@dataTypes/ApiRequest';
+import NewsHelper from '@helpers/News';
+
 describe('Test of news endopint', () => {
-    const API_KEY = 'ZyOodoS0W0QPao6Z';
-    const urlApi = 'https://mobileapi.x-kom.it';
+  const newsHelper = new NewsHelper();
 
-    it('should return ten newest news', () => {
-        cy.request({
-            method: 'GET',
-            url: urlApi + '/api/v1/xkom/News',
-            headers : {
-                'X-API-Key': API_KEY
-            }
-        }).then(response => {
-            let random = Math.floor((10 - 0)*Math.random());
-            const randomID = response.body.Items[random].Id;
-            cy.setLocalStorage('random_id', randomID);
-            cy.saveLocalStorage()
-        })
-    })
+  beforeEach(() => {
+    cy.restoreLocalStorage();
+  });
 
-    it('should return the specific news with given id', () => {
-        cy.restoreLocalStorage();
-        cy.getLocalStorage('random_id').then(id => {
-            cy.log(id);
-            cy.request({
-                method: 'GET',
-                url: urlApi + '/api/v1/xkom/News/' + id,
-                headers: {
-                    'X-API-Key': API_KEY
-                }
-            }).then(response => {
-                expect(response.status).equal(200);
-                expect(response.body.Id).equal(id)
-            })
-        })
-    })
+  it('should return ten newest news', () => {
+    newsHelper.getNews().then((body: ApiResponse['body']) => {
+      const randomNewsId = newsHelper.getRandomNewsId(body);
+      cy.setLocalStorage('newsId', randomNewsId);
+    });
+    cy.saveLocalStorage();
+  });
 
-    it('should return comments of the specific news with given id', () => {
-        cy.restoreLocalStorage();
-        cy.getLocalStorage('random_id').then(id => {
-            cy.request({
-                method: 'GET',
-                url: urlApi + '/api/v1/xkom/News/' + id,
-                headers: {
-                    'X-API-Key': API_KEY
-                }
-            }).then(response => {
-                expect(response.status).equal(200)
-            })
-        })
-    })
-})
+  it('should return the specific news with given id', () => {
+    cy.getLocalStorage('newsId').then((newsId) => {
+      newsHelper.getSpecificNews(newsId);
+    });
+  });
+
+  it('should return comments of the specific news with given id', () => {
+    cy.getLocalStorage('newsId').then((newsId) => {
+      newsHelper.getSpecificNewsComments(newsId);
+    });
+  });
+});

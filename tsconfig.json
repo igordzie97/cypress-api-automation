@@ -1,8 +1,17 @@
 {
-    "compilerOptions": {
-      "target": "es5",
-      "lib": ["es5", "dom"],
-      "types": ["cypress"]
-    },
-    "include": ["**/*.ts"]
+  "compilerOptions": {
+    "strict": true,
+    "target": "es5",
+    "lib": ["es5", "dom"],
+    "typeRoots": ["./support"],
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@controllerPaths/*": ["cypress/controllerPaths/*"],
+      "@dataSets/*": ["cypress/dataSets/*"],
+      "@dataTypes/*": ["cypress/dataTypes/*"],
+      "@helpers/*": ["cypress/helpers/*"]
+    }
+  },
+  "include": ["**/*.ts"]
 }

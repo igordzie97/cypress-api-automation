@@ -1,1 +1,0 @@
-# cypress-api-automation

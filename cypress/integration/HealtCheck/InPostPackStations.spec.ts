@@ -1,81 +1,52 @@
+import { ApiResponse } from '@dataTypes/ApiRequest';
+import InPostHelper from '@helpers/InPost';
+
 describe('Test of the InPostPackStations endpoint', () => {
-    const API_KEY = 'ZyOodoS0W0QPao6Z';
-    const urlApi = 'https://mobileapi.x-kom.it';
+  const inPostHelper = new InPostHelper();
 
-    it('Should properly GET all provinces InPost pack stations', () => {
-        cy.request({
-            method: 'GET',
-            url: urlApi + '/api/v1/xkom/InPostPackStations/Provinces',
-            headers: {
-                'X-API-Key': API_KEY
-            }
-        }).then(response => {
-            expect(response.status).equal(200);
-            let random = Math.floor((response.body.length - 0)*Math.random());
-            cy.log(response.body[random].Id);
-            cy.setLocalStorage('provinceID', response.body[random].Id);
-            cy.saveLocalStorage();
-        })
-    })
+  beforeEach(() => {
+    cy.restoreLocalStorage();
+  });
 
-    it('Should properly GET cities InPost pack stations', () => {
-        cy.restoreLocalStorage();
-        cy.getLocalStorage('provinceID').then(provinceID => {
-            cy.request({
-                method: 'GET',
-                url: urlApi + '/api/v1/xkom/InPostPackStations/Cities',
-                headers: {
-                    'X-API-Key': API_KEY
-                },
-                qs: {
-                    'provinceId': provinceID
-                }
-            }).then(response => {
-                expect(response.status).equal(200);
-                let random = Math.floor((response.body.length - 0)*Math.random());
-                cy.log(response.body[random].Id);
-                cy.setLocalStorage('cityID', response.body[random].Id);
-                cy.saveLocalStorage();
-            })
-        })
-    })
+  afterEach(() => {
+    cy.saveLocalStorage();
+  });
 
-    it('Should properly GET InPost pack stations list', () => {
-        cy.restoreLocalStorage();
-        cy.getLocalStorage('provinceID').then(provinceID => {
-            cy.getLocalStorage('cityID').then(cityID => {
-                cy.request({
-                    method: 'GET',
-                    url: urlApi + '/api/v1/xkom/InPostPackStations',
-                    headers: {
-                        'X-API-Key': API_KEY
-                    },
-                    qs: {
-                        'provinceId': provinceID,
-                        'cityId': cityID
-                    }
-                }).then(response => {
-                    expect(response.status).equal(200);
-                    cy.setLocalStorage('inpostID', response.body[0].Id);
-                    cy.saveLocalStorage();
-                })
-            })
-        })
-    })
+  it('Should properly GET all provinces InPost pack stations', () => {
+    inPostHelper.getProvinces().then((body: ApiResponse['body']) => {
+      const randomProvinceId = inPostHelper.getRandomProvinceOrCityId(body);
+      cy.log(randomProvinceId);
+      cy.setLocalStorage('randomProvinceId', randomProvinceId);
+    });
+    cy.saveLocalStorage();
+  });
 
-    it('Should properly GET specific InPost pack station', () => {
-        cy.restoreLocalStorage();
-        cy.getLocalStorage('inpostID').then(inpostID => {
-            cy.request({
-                method: 'GET',
-                url: urlApi + '/api/v1/xkom/InPostPackStations/' + inpostID,
-                headers: {
-                    'X-API-Key': API_KEY
-                }
-            }).then(response => {
-                expect(response.status).equal(200);
-                expect(response.body.Id).equal(inpostID);
-            })
-        })
-    })
-})
+  it('Should properly GET cities InPost pack stations', () => {
+    cy.getLocalStorage('randomProvinceId').then((randomProvinceId) => {
+      inPostHelper
+        .getCitiesInProvince(randomProvinceId)
+        .then((body: ApiResponse['body']) => {
+          const randomCityId = inPostHelper.getRandomProvinceOrCityId(body);
+          cy.setLocalStorage('randomCityId', randomCityId);
+        });
+    });
+  });
+
+  it('Should properly GET InPost pack stations list', () => {
+    cy.getLocalStorage('randomProvinceId').then((randomProvinceId) => {
+      cy.getLocalStorage('randomCityId').then((randomCityId) => {
+        inPostHelper
+          .getPackStationsInProvinceAndCity(randomProvinceId, randomCityId)
+          .then((body: ApiResponse['body']) => {
+            cy.setLocalStorage('inPostStationId', body[0].Id);
+          });
+      });
+    });
+  });
+
+  it('Should properly GET specific InPost pack station', () => {
+    cy.getLocalStorage('inPostStationId').then((inPostStationId) => {
+      inPostHelper.getSpecificPackSation(inPostStationId);
+    });
+  });
+});

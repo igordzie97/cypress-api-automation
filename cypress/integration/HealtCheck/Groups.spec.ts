@@ -1,56 +1,31 @@
+import { ApiResponse } from '@dataTypes/ApiRequest';
+import GroupsHelper from '@helpers/Groups';
+
 describe('Test of the Groups endpoint', () => {
-    const API_KEY = 'ZyOodoS0W0QPao6Z';
-    const paginationPageSize = 50;
-    const hotShotId = 396852;
-    const urlApi = 'https://mobileapi.x-kom.it';
+  const groupsHelper = new GroupsHelper();
 
-    it('Should properly GET all groups and get random groupID', () => {
-        cy.request({
-            method: 'GET',
-            url: urlApi + '/api/v1/xkom/Groups',
-            headers: {
-                'X-API-Key': API_KEY
-            }
-        }).then(response => {
-            expect(response.status).equal(200);
-            let size = response.body.length;
-            expect(size).to.be.greaterThan(0);
-            let random = Math.floor((size - 0)*Math.random());
-            let randomGroupID = response.body[random].Id;
-            cy.setLocalStorage('randomGroupID', randomGroupID);
-            cy.saveLocalStorage();
-        })
-    })
+  beforeEach(() => {
+    cy.restoreLocalStorage();
+  });
 
-    it('Should properly GET all groups with expand pole', ()=> {
-        cy.request({
-            method: 'GET',
-            url: urlApi + '/api/v1/xkom/Groups',
-            headers: {
-                'X-API-Key': API_KEY
-            },
-            qs: {
-                'expand': 'Categories'
-            }
-        }).then(response => {
-            expect(response.status).equal(200);
-            expect(response.body.length).to.be.greaterThan(0);
-        })
-    })
+  afterEach(() => {
+    cy.saveLocalStorage();
+  });
 
-    it('Should properly GET information about random Group', () => {
-        cy.restoreLocalStorage();
-        cy.getLocalStorage('randomGroupID').then(groupID => {
-            cy.request({
-                method: 'GET',
-                url: urlApi + '/api/v1/xkom/Groups/' + groupID,
-                headers: {
-                    'X-API-Key': API_KEY
-                }
-            }).then(response => {
-                expect(response.status).equal(200);
-                expect(response.body.Id).equal(groupID);
-            })
-        })
-    })
-})
+  it('Should properly GET all groups and get random groupID', () => {
+    groupsHelper.getAllGroups().then((body: ApiResponse['body']) => {
+      const randomGroupId = groupsHelper.getRandomGroupId(body);
+      cy.setLocalStorage('randomGroupId', randomGroupId);
+    });
+  });
+
+  it('Should properly GET all groups with expand pole', () => {
+    groupsHelper.getAllGroups('Categories');
+  });
+
+  it('Should properly GET information about random Group', () => {
+    cy.getLocalStorage('randomGroupId').then((randomGroupId) => {
+      groupsHelper.getSpecificGroup(randomGroupId);
+    });
+  });
+});

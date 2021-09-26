@@ -1,69 +1,41 @@
+import { ApiResponse } from '@dataTypes/ApiRequest';
+import CategoriesHelper from '@helpers/Categories';
+import GroupsHelper from '@helpers/Groups';
+
 describe('Test of the categories endpoint', () => {
-    const API_KEY = 'ZyOodoS0W0QPao6Z';
-    const urlApi = 'https://mobileapi.x-kom.it';
+  const categoriesHelper = new CategoriesHelper();
+  const groupsHelper = new GroupsHelper();
 
-    before(() => {
-        cy.request({
-            method: 'GET',
-            url: urlApi + '/api/v1/xkom/Groups',
-            headers: {
-                'X-API-Key': API_KEY
-            }
-        }).then(response => {
-            expect(response.status).equal(200);
-            let size = response.body.length;
-            expect(size).to.be.greaterThan(0);
-            let random = Math.floor((size - 0)*Math.random());
-            let randomGroupID = response.body[random].Id;
-            cy.setLocalStorage('randomGroupID', randomGroupID);
-            cy.saveLocalStorage();
-        })
-    }) 
+  before(() => {
+    groupsHelper.getAllGroups().then((body: ApiResponse['body']) => {
+      const randomGroupId = groupsHelper.getRandomGroupId(body);
+      cy.setLocalStorage('randomGroupId', randomGroupId);
+    });
+    cy.saveLocalStorage();
+  });
 
-    it('Should properly GET all product categories with given groupID, expand pole and sort both descending by the ProductsCount', () => {
-        cy.restoreLocalStorage();
-        cy.getLocalStorage('randomGroupID').then(grouID => {
-            cy.request({
-                method: 'GET',
-                url: urlApi + '/api/v1/xkom/Categories',
-                headers: {
-                    'X-API-Key': API_KEY
-                },
-                qs: {
-                    'groupIds': grouID,
-                    'expand': 'ChildCategories',
-                    'sort': 'ProductsCount desc',
-                    'childCategoriesSort': 'ProductsCount desc'
-                }
-            }).then(response => {
-                expect(response.status).equal(200);
-                let size = response.body.length;
-                expect(size).to.be.greaterThan(0);
-                let random = Math.floor((size - 0)*Math.random());
-                let categoryID = response.body[random].Id;
-                cy.setLocalStorage('randomCategoryID', categoryID);
-                cy.saveLocalStorage();
-            })
-        })
-    })  
+  beforeEach(() => {
+    cy.restoreLocalStorage();
+  });
 
-    it('Should properly GET specific product categories with expand pole and sort it descending', () => {
-        cy.restoreLocalStorage();
-        cy.getLocalStorage('randomCategoryID').then(categoryID => {
-            cy.request({
-                method: 'GET',
-                url: urlApi + '/api/v1/xkom/Categories/' + categoryID,
-                headers: {
-                    'X-API-Key': API_KEY
-                },
-                qs: {
-                    'expand': 'ChildCategories, Producers',
-                    'childCategoriesSort': 'ProductsCount desc'
-                }
-            }).then(response => {
-                expect(response.status).equal(200);
-                expect(response.body.Id).equal(categoryID);
-            })
-        })
-    })
-})
+  afterEach(() => {
+    cy.saveLocalStorage();
+  });
+
+  it('Should properly GET all product categories with given groupID, expand pole and sort both descending by the ProductsCount', () => {
+    cy.getLocalStorage('randomGroupId').then((randomGroupId) => {
+      categoriesHelper
+        .getCategoriesWithGroup(randomGroupId)
+        .then((body: ApiResponse['body']) => {
+          const randomCategoryId = categoriesHelper.getRandomCategoryId(body);
+          cy.setLocalStorage('randomCategoryId', randomCategoryId);
+        });
+    });
+  });
+
+  it('Should properly GET specific product categories with expand pole and sort it descending', () => {
+    cy.getLocalStorage('randomCategoryId').then((randomCategoryId) => {
+      categoriesHelper.getSpecificCategory(randomCategoryId);
+    });
+  });
+});

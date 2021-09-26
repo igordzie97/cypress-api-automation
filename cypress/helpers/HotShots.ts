@@ -1,16 +1,25 @@
+import {
+  getCurrentHotShot,
+  getHotShotPurchaes,
+} from '@controllerPaths/HotShots';
+import { ApiResponse, StringParameter } from '@dataTypes/ApiRequest';
+
 class HotShotsHelper {
-    getCurrentHotShot = () => {
-        return cy.request({
-            method: 'GET',
-            url: Cypress.env('BASE_URL') + Cypress.env('endpoints').hotshots_current,
-            headers: {
-                'X-API-Key': Cypress.env('API_KEY')
-            }
-        }).then((response) => {
-            expect(response.status).equal(200);
-            return response.body.Product.Id;
-        })
-    }
+  getCurrentHotShot = (): ApiResponse['body'] => {
+    return cy.apiRequest(getCurrentHotShot).then((resp) => {
+      expect(resp.status).equal(200);
+
+      return resp.body.Product.Id;
+    });
+  };
+
+  getHotShotPurchases = (hotShotId: StringParameter): ApiResponse['body'] => {
+    return cy.apiRequest(getHotShotPurchaes(hotShotId)).then((resp) => {
+      expect(resp.status).equal(200);
+
+      return resp.body;
+    });
+  };
 }
 
 export default HotShotsHelper;
