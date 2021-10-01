@@ -18,7 +18,7 @@ Whole project is containerized using Docker.
 - **Docker** - containerization 
 
 ## Structure
-Project structure is divided into:
+Project structure is organised similar to Page Object Pattern - Controller (similarity to Page), Controller Methods (similarity to Page Objects). Folders are divided into:
 - **controllerPaths/** - defined controllers with their specific methods. Each method has specific values: http method, url, headers, body, query strings.
 - **dataTypes/** - contains all interfaces for dataSet.
 - **dataSet/** - contains all defined set with specific data (based on interfaces from dataTypes).
@@ -29,8 +29,8 @@ Project structure is divided into:
 ## Configuration
 
 ## Commands and start up
-npm run verify
-npm run lin
-npm run tsc
-docker build -t api:cypress .
-npm run cypress:open -- --env BASE_URL=
+`npm run verify`
+`npm run lin`
+`npm run tsc`
+`docker build -t api:cypress .`
+`npm run cypress:open -- --env BASE_URL=`
