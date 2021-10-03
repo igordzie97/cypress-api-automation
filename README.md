@@ -69,12 +69,6 @@ Cypress.Commands.add('apiRequest', (request: ApiRequest) => {
 
 `cypress.json` - includes all paths for endpoints.
 
-`cypress.env.json` - includes specified url and API-KEY. User has to create this file to set up the project:
-```json
-  "BASE_URL": "",
-  "API_KEY": ""
-```
-
 `Dockerfile` - Docker configuration:
 ```dockerfile
 FROM cypress/base:14.17.0
@@ -166,12 +160,25 @@ describe('Test of Account endpoint', () => {
 ```
 
 ## Commands and start up
-`npm run lint` - 
+`npm run lint` - check all the files with the eslint rules.
 
-`npm run tsc` - 
+`npm run tsc` - type checking without compilation.
 
-`npm run verify` - 
+`npm run verify` - connection of lint and tsc command.
 
-`docker build -t api:cypress .` - 
+`docker build -t api:cypress .` - building docker image.
 
-`npm run open -- --env BASE_URL=` - 
+`npm run open` - open Cypress Test Runner.
+
+`npm run headless` - run cypress tests headlessly.
+
+To run project you need to provide two environment variables - `BASE_URL` and `API_KEY`. There are two approaches:
+- **Preferred**: Create a `cypress.env.json` file:
+```json
+  "BASE_URL": "",
+  "API_KEY": ""
+```
+
+- Provide using command, for example: 
+
+`npm run open -- --env BASE_URL=url_value,API_KEY=key_value`
