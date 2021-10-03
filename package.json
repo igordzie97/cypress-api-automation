@@ -4,8 +4,8 @@
   "description": "Proboujemy",
   "main": "index.js",
   "scripts": {
-    "cypress:open": "cypress open",
-    "cypress:run": "cypress run",
+    "open": "cypress open",
+    "headless": "cypress run",
     "tsc": "tsc --noEmit",
     "lint": "eslint ./**/*.ts",
     "verify": "tsc --noEmit && eslint ./**/*.ts"
