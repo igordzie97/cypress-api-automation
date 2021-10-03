@@ -160,6 +160,7 @@ describe('Test of Account endpoint', () => {
 ```
 
 ## Commands and start up
+### Commands
 `npm run lint` - check all the files with the eslint rules.
 
 `npm run tsc` - type checking without compilation.
@@ -172,6 +173,7 @@ describe('Test of Account endpoint', () => {
 
 `npm run headless` - run cypress tests headlessly.
 
+### Start up
 To run project you need to provide two environment variables - `BASE_URL` and `API_KEY`. There are two approaches:
 - **Preferred**: Create a `cypress.env.json` file:
 ```json
