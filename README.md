@@ -13,10 +13,10 @@ Whole project is containerized using Docker.
 
 ## Technologies
 - **Cypress** (8.5.0) - JavaScript test framework
-- **TypeScript** (4.4.3) - adds additional syntax to JavaScript
-- **Eslint** (7.32.0) -  static analyzer of code
-- **Prettier** -  code formatter, integrated with Visual Studio Code
-- **Docker** - containerization
+- **TypeScript** (4.4.3) - Adds additional syntax to JavaScript
+- **Eslint** (7.32.0) -  Static analyzer of code
+- **Prettier** -  Code formatter, integrated with Visual Studio Code
+- **Docker** - Containerization
 
 ## Structure
 Project structure is organised similar to Page Object Pattern - Controller (similarity to Page), Controller Methods (similarity to Page Objects). Folders are divided into:
@@ -159,7 +159,7 @@ describe('Test of Account endpoint', () => {
 })
 ```
 
-## Commands and start up
+## Commands and setting up
 ### Commands
 `npm run lint` - check all the files with the eslint rules.
 
@@ -173,7 +173,7 @@ describe('Test of Account endpoint', () => {
 
 `npm run headless` - run cypress tests headlessly.
 
-### Start up
+### Setting up
 To run project you need to provide two environment variables - `BASE_URL` and `API_KEY`. There are two approaches:
 - **Preferred**: Create a `cypress.env.json` file:
 ```json
