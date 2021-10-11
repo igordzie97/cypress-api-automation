@@ -14,7 +14,7 @@ Whole project is containerized using Docker.
 ## Technologies
 - **Cypress** (8.5.0) - JavaScript test framework
 - **TypeScript** (4.4.3) - Adds additional syntax to JavaScript
-- **Eslint** (7.32.0) -  Static analyzer of code
+- **Eslint** (7.32.0) -  Static code analyzer
 - **Prettier** -  Code formatter, integrated with Visual Studio Code
 - **Docker** - Containerization
 
